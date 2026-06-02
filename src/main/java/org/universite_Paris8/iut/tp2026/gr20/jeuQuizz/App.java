@@ -1,17 +1,9 @@
 package org.universite_Paris8.iut.tp2026.gr20.jeuQuizz;
 
-import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.dtos.JoueurDTO;
-import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.mos.Joueur;
-import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.impls.JoueurServiceImpl;
-import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.interfaces.IJoueurService;
-import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.*;
-
-import java.util.List;
 import java.util.Scanner;
 
 public class App {
 
-    private static final IJoueurService service = new JoueurServiceImpl();
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
