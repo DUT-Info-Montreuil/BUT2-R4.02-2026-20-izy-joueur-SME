@@ -4,26 +4,25 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.dtos.JoueurDTO;
-import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.JoueurServiceStub;
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.impls.JoueurServiceImpl;
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.interfaces.IJoueurService;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CreatePlayerTest {
 
-    private JoueurServiceStub stub;
+    private IJoueurService stub;
     private JoueurDTO joueurValide;
 
     @BeforeEach
     void setUp() {
-        stub = new JoueurServiceStub();
+        stub = new JoueurServiceImpl();
         joueurValide = new JoueurDTO("Alice", "ali77", 2000, 1, "gaming,lecture");
     }
 
     @Test
     void createPlayer_nominal() throws Exception {
-        stub.joueurRetourne = joueurValide;
-
         JoueurDTO result = stub.createPlayer(joueurValide);
 
         assertNotNull(result);
@@ -34,31 +33,31 @@ public class CreatePlayerTest {
 
     @Test
     void createPlayer_prenomInvalide() {
-        stub.lancerInvalidPrenom = true;
-        assertThrows(InvalidPrenomException.class, () -> stub.createPlayer(joueurValide));
+        JoueurDTO dto = new JoueurDTO("Al1ce", "ali77", 2000, 1, "gaming");
+        assertThrows(InvalidPrenomException.class, () -> stub.createPlayer(dto));
     }
 
     @Test
     void createPlayer_pseudoInvalide() {
-        stub.lancerInvalidPseudo = true;
-        assertThrows(InvalidPseudoException.class, () -> stub.createPlayer(joueurValide));
+        JoueurDTO dto = new JoueurDTO("Alice", "1ali", 2000, 1, "gaming");
+        assertThrows(InvalidPseudoException.class, () -> stub.createPlayer(dto));
     }
 
     @Test
     void createPlayer_anneeInvalide() {
-        stub.lancerInvalidAnnee = true;
-        assertThrows(InvalidAnneeNaissanceException.class, () -> stub.createPlayer(joueurValide));
+        JoueurDTO dto = new JoueurDTO("Alice", "ali77", 1800, 1, "gaming");
+        assertThrows(InvalidAnneeNaissanceException.class, () -> stub.createPlayer(dto));
     }
 
     @Test
     void createPlayer_langueInvalide() {
-        stub.lancerInvalidLangue = true;
-        assertThrows(InvalidLangueException.class, () -> stub.createPlayer(joueurValide));
+        JoueurDTO dto = new JoueurDTO("Alice", "ali77", 2000, 99, "gaming");
+        assertThrows(InvalidLangueException.class, () -> stub.createPlayer(dto));
     }
 
     @Test
     void createPlayer_hobbiesInvalides() {
-        stub.lancerInvalidHobbies = true;
-        assertThrows(InvalidHobbiesException.class, () -> stub.createPlayer(joueurValide));
+        JoueurDTO dto = new JoueurDTO("Alice", "ali77", 2000, 1, ",gaming");
+        assertThrows(InvalidHobbiesException.class, () -> stub.createPlayer(dto));
     }
 }

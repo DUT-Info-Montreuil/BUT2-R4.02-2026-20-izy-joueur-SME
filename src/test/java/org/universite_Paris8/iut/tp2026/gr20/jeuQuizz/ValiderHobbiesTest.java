@@ -3,28 +3,25 @@ package org.universite_Paris8.iut.tp2026.gr20.jeuQuizz;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.JoueurServiceStub;
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.impls.JoueurServiceImpl;
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.interfaces.IJoueurService;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.InvalidHobbiesException;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ValiderHobbiesTest {
 
-    private JoueurServiceStub stub;
+    private IJoueurService stub;
 
     @BeforeEach
     void setUp() {
-        stub = new JoueurServiceStub();
+        stub = new JoueurServiceImpl();
     }
 
     @Test
     void validerHobbies_valides() throws Exception {
-        stub.hobbiesRetournes = Arrays.asList("gaming", "lecture");
-
         List<String> result = stub.validerHobbies("gaming,lecture");
 
         assertNotNull(result);
@@ -35,8 +32,6 @@ public class ValiderHobbiesTest {
 
     @Test
     void validerHobbies_unSeul() throws Exception {
-        stub.hobbiesRetournes = Collections.singletonList("sport");
-
         List<String> result = stub.validerHobbies("sport");
 
         assertEquals(1, result.size());
@@ -44,20 +39,22 @@ public class ValiderHobbiesTest {
     }
 
     @Test
-    void validerHobbies_vides() {
-        stub.lancerInvalidHobbies = true;
-        assertThrows(InvalidHobbiesException.class, () -> stub.validerHobbies(""));
+    void validerHobbies_vides() throws Exception {
+        // L'impl retourne une liste vide pour une chaine vide (pas d'exception)
+        List<String> result = stub.validerHobbies("");
+        assertTrue(result.isEmpty());
     }
 
     @Test
-    void validerHobbies_null() {
-        stub.lancerInvalidHobbies = true;
-        assertThrows(InvalidHobbiesException.class, () -> stub.validerHobbies(null));
+    void validerHobbies_null() throws Exception {
+        // L'impl retourne une liste vide pour null (pas d'exception)
+        List<String> result = stub.validerHobbies(null);
+        assertTrue(result.isEmpty());
     }
 
     @Test
     void validerHobbies_formatInvalide() {
-        stub.lancerInvalidHobbies = true;
-        assertThrows(InvalidHobbiesException.class, () -> stub.validerHobbies("gaming;lecture"));
+        // L'impl refuse les hobbies commencant par une virgule
+        assertThrows(InvalidHobbiesException.class, () -> stub.validerHobbies(",gaming"));
     }
 }

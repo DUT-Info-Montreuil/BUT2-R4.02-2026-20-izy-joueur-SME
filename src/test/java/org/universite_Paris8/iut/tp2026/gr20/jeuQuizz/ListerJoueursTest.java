@@ -4,30 +4,30 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.dtos.JoueurDTO;
-import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.JoueurServiceStub;
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.impls.JoueurServiceImpl;
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.interfaces.IJoueurService;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.NoPlayerAvailableException;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ListerJoueursTest {
 
-    private JoueurServiceStub stub;
+    private IJoueurService stub;
     private JoueurDTO joueurValide;
 
     @BeforeEach
     void setUp() {
-        stub = new JoueurServiceStub();
+        stub = new JoueurServiceImpl();
         joueurValide = new JoueurDTO("Alice", "ali77", 2000, 1, "gaming,lecture");
     }
 
     @Test
     void listerJoueurs_listeNonVide() throws Exception {
         JoueurDTO j2 = new JoueurDTO("Bob", "bob99", 1999, 2, "sport");
-        stub.listeRetournee = Arrays.asList(joueurValide, j2);
+        stub.createPlayer(joueurValide);
+        stub.createPlayer(j2);
 
         List<JoueurDTO> result = stub.listerJoueurs();
 
@@ -39,7 +39,7 @@ public class ListerJoueursTest {
 
     @Test
     void listerJoueurs_unSeulJoueur() throws Exception {
-        stub.listeRetournee = Collections.singletonList(joueurValide);
+        stub.createPlayer(joueurValide);
 
         List<JoueurDTO> result = stub.listerJoueurs();
 
@@ -48,7 +48,6 @@ public class ListerJoueursTest {
 
     @Test
     void listerJoueurs_aucunJoueur() {
-        stub.lancerNoPlayer = true;
         assertThrows(NoPlayerAvailableException.class, () -> stub.listerJoueurs());
     }
 }
