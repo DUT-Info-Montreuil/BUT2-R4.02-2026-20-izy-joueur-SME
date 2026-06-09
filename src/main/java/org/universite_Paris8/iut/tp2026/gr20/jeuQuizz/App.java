@@ -2,7 +2,9 @@ package org.universite_Paris8.iut.tp2026.gr20.jeuQuizz;
 
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.dtos.JoueurDTO;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.impls.JoueurServiceImpl;
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.impls.StatsServiceImpl;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.interfaces.IJoueurService;
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.interfaces.IStatsService;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.*;
 
 import java.util.List;
@@ -10,8 +12,9 @@ import java.util.Scanner;
 
 public class App {
 
-    private static final IJoueurService service = new JoueurServiceImpl();
-    private static final Scanner scanner = new Scanner(System.in);
+    private static final IJoueurService service      = new JoueurServiceImpl();
+    private static final IStatsService  statsService = new StatsServiceImpl();
+    private static final Scanner        scanner      = new Scanner(System.in);
 
     public static void main(String[] args) {
         boolean running = true;
@@ -22,8 +25,8 @@ public class App {
                 case 1 -> gestionUtilisateurs();
                 case 2 -> System.out.println("(Lancer une partie)");
                 case 3 -> System.out.println("(Classement)");
-                case 4 -> System.out.println("(Statistiques)");
-                case 5 -> System.out.println("(Règles)");
+                case 4 -> afficherStatistiques();
+                case 5 -> System.out.println("(Regles)");
                 case 6 -> running = false;
             }
         }
@@ -41,9 +44,24 @@ public class App {
         System.out.println("2. Lancer une partie.");
         System.out.println("3. Voir le classement.");
         System.out.println("4. Voir les statistiques.");
-        System.out.println("5. Afficher la règle.");
+        System.out.println("5. Afficher la regle.");
         System.out.println("6. Quitter le jeu");
         System.out.print("Votre choix : ");
+    }
+
+    // ----------------------------------------------------------------
+    // Statistiques (case 4)
+    // ----------------------------------------------------------------
+
+    private static void afficherStatistiques() {
+        try {
+            List<JoueurDTO> joueurs = service.listerJoueurs();
+            statsService.afficherStats(joueurs);
+        } catch (NoPlayerAvailableException e) {
+            System.out.println("Aucun joueur enregistre pour le moment.");
+        }
+        System.out.println("\nAppuyez sur Entree pour revenir au menu...");
+        scanner.nextLine();
     }
 
     // ----------------------------------------------------------------
@@ -71,7 +89,7 @@ public class App {
             System.out.println("Les joueurs connus sont :");
             joueurs.forEach(j -> System.out.println("  - " + j));
         } catch (NoPlayerAvailableException e) {
-            System.out.println("Aucun joueur enregistré pour le moment.");
+            System.out.println("Aucun joueur enregistre pour le moment.");
         }
     }
 
@@ -80,27 +98,27 @@ public class App {
     // ----------------------------------------------------------------
 
     private static void ajouterJoueur() {
-        System.out.println("\n*** Création Utilisateur ***");
+        System.out.println("\n*** Creation Utilisateur ***");
 
-        System.out.print("Prénom du joueur : ");
+        System.out.print("Prenom du joueur : ");
         String prenom = scanner.nextLine().trim();
 
         System.out.print("Pseudo : ");
         String pseudo = scanner.nextLine().trim();
 
-        System.out.print("Année de naissance : ");
+        System.out.print("Annee de naissance : ");
         int annee = lireEntier();
 
-        System.out.print("Centres d'intérêts (séparés par des ,) : ");
+        System.out.print("Centres d'interets (separes par des ,) : ");
         String hobbies = scanner.nextLine().trim();
 
-        System.out.println("Langue préférée :");
-        System.out.println("  1. Français");
+        System.out.println("Langue preferee :");
+        System.out.println("  1. Francais");
         System.out.println("  2. Anglais");
         System.out.println("  3. Allemand");
         System.out.println("  4. Espagnol");
         System.out.println("  5. Italien");
-        System.out.print("Votre choix de langue préférée : ");
+        System.out.print("Votre choix de langue preferee : ");
         int langue = lireEntierBorne(1, 5);
 
         JoueurDTO dto = new JoueurDTO(prenom, pseudo, annee, langue, hobbies);
@@ -109,9 +127,9 @@ public class App {
             JoueurDTO joueur = service.createPlayer(dto);
             String hobbiesAffichage = joueur.getHobbies();
             if (hobbiesAffichage == null || hobbiesAffichage.isBlank()) {
-                System.out.println(joueur.getPseudo() + " a été ajouté.");
+                System.out.println(joueur.getPseudo() + " a ete ajoute.");
             } else {
-                System.out.println(joueur.getPseudo() + " fan de " + hobbiesAffichage + " a été ajouté.");
+                System.out.println(joueur.getPseudo() + " fan de " + hobbiesAffichage + " a ete ajoute.");
             }
         } catch (InvalidPrenomException | InvalidPseudoException |
                  InvalidAnneeNaissanceException | InvalidLangueException |
@@ -119,7 +137,7 @@ public class App {
             System.out.println("Erreur : " + e.getMessage());
         }
 
-        System.out.println("Appuyez sur Entrée pour revenir au menu...");
+        System.out.println("Appuyez sur Entree pour revenir au menu...");
         scanner.nextLine();
     }
 
@@ -141,9 +159,7 @@ public class App {
         while (true) {
             try {
                 int valeur = Integer.parseInt(scanner.nextLine().trim());
-                if (valeur >= min && valeur <= max) {
-                    return valeur;
-                }
+                if (valeur >= min && valeur <= max) return valeur;
                 System.out.print("Saisie invalide, entrez un chiffre entre " + min + " et " + max + " : ");
             } catch (NumberFormatException e) {
                 System.out.print("Saisie invalide, entrez un chiffre entre " + min + " et " + max + " : ");
