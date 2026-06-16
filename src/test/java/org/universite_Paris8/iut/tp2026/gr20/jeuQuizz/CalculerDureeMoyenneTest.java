@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.dtos.JoueurDTO;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.dtos.PartieDTO;
-import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.mocks.StatsServiceMock;
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.impls.StatsServiceImpl;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.interfaces.IStatsService;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,7 +17,7 @@ public class CalculerDureeMoyenneTest {
 
     @BeforeEach
     void setUp() {
-        stub   = new StatsServiceMock();
+        stub   = new StatsServiceImpl();
         joueur = new JoueurDTO("Alice", "ali77", 2000, 1, "gaming");
     }
 

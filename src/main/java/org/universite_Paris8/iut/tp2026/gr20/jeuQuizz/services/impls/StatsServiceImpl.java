@@ -49,7 +49,9 @@ public class StatsServiceImpl implements IStatsService {
         List<PartieDTO> parties = joueur.getParties();
         int nb = parties.size();
         if (nb < 5) return Collections.emptyList();
-        return parties.subList(nb - 5, nb);
+        List<PartieDTO> dernieres = new ArrayList<>(parties.subList(nb - 5, nb));
+        Collections.reverse(dernieres);
+        return dernieres;
     }
 
     @Override
